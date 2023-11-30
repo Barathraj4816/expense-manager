@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Expense {
+    private String category;
+    private double amount;
+    private Date date;
+
+    public Expense(String category, double amount, Date date) {
+        this.category = category;
+        this.amount = amount;
+        this.date = date;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+}
+
+class ExpenseManager {
+    private Map<String, List<Expense>> expensesByCategory;
+
+    public ExpenseManager() {
+        expensesByCategory = new HashMap<>();
+    }
+
+    public void addExpense(String category, double amount, Date date) {
+        Expense expense = new Expense(category, amount, date);
+        List<Expense> expenses = expensesByCategory.getOrDefault(category, new ArrayList<>());
+        expenses.add(expense);
+        expensesByCategory.put(category, expenses);
+    }
+
+    public void viewExpenses() {
+        for (Map.Entry<String, List<Expense>> entry : expensesByCategory.entrySet()) {
+            String category = entry.getKey();
+            List<Expense> expenses = entry.getValue();
+
+            System.out.println("Category: " + category);
+            for (Expense expense : expenses) {
+                System.out.println("Amount: " + expense.getAmount() + " Date: " + expense.getDate());
+            }
+            System.out.println();
+        }
+    }
+
+    public double calculateTotalExpense(String category) {
+        List<Expense> expenses = expensesByCategory.getOrDefault(category, new ArrayList<>());
+        double total = 0;
+        for (Expense expense : expenses) {
+            total += expense.getAmount();
+        }
+        return total;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ExpenseManager expenseManager = new ExpenseManager();
+
+        // Adding expenses
+        expenseManager.addExpense("Food", 50.5, new Date());
+        expenseManager.addExpense("Transport", 30.2, new Date());
+        expenseManager.addExpense("Food", 25.0, new Date());
+
+        // Viewing all expenses
+        expenseManager.viewExpenses();
+
+        // Calculating total expenses for a specific category
+        String category = "Food";
+        double totalExpense = expenseManager.calculateTotalExpense(category);
+        System.out.println("Total expense for " + category + ": " + totalExpense);
+    }
+}
